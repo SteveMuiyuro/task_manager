@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- BASE BODY STYLES --- */
+body {
+  @apply bg-slate-50 text-slate-900;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ------------------------------------------------------------------
+   LIGHT THEME VARIABLES (NO DARK MODE)
+   These are required for shadcn/ui components + the calendar.
+------------------------------------------------------------------- */
+@layer base {
+  :root {
+    /* Backgrounds & Text */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+
+    /* Cards / Popovers */
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+
+    /* PRIMARY (Fixes Calendar Selected Color) */
+    --primary: 221 83% 53%;            /* blue-500 (shadcn default) */
+    --primary-foreground: 210 40% 98%; /* white */
+
+    /* SECONDARY */
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+
+    /* MUTED */
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    /* ACCENT (Fixes Calendar "Today" Color) */
+    --accent: 240 10% 90%;
+    --accent-foreground: 240 5.9% 10%;
+
+    /* DESTRUCTIVE */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Borders & Inputs */
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+
+    /* Radius */
+    --radius: 0.5rem;
+  }
+
+  /* Completely disable dark mode */
+  .dark {
+    /* intentionally empty */
+  }
+}
+
+/* ------------------------------------------------------------------
+   APPLY BASE THEME TO EVERYTHING
+------------------------------------------------------------------- */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
