@@ -10,7 +10,7 @@ const LandingNavbar = () => {
     <header className="w-full sticky top-0 z-30 backdrop-blur border-b border-white/10 bg-[#120e2b]/70">
       <nav className="max-w-6xl mx-auto px-4 sm:px-6">
         
-        {/* TOP BAR */}
+        {/* Top Bar */}
         <div className="flex items-center justify-between py-4">
           {/* BRAND */}
           <Link
@@ -20,7 +20,7 @@ const LandingNavbar = () => {
             TaskManager
           </Link>
 
-          {/* DESKTOP NAV */}
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-3">
             <AppButton
               to="/login"
@@ -33,7 +33,7 @@ const LandingNavbar = () => {
             <AppButton to="/register">Register</AppButton>
           </div>
 
-          {/* MOBILE TOGGLE */}
+          {/* Mobile Toggle */}
           <button
             onClick={() => setIsOpen((prev) => !prev)}
             aria-label="Toggle navigation menu"
@@ -63,7 +63,7 @@ const LandingNavbar = () => {
           </button>
         </div>
 
-        {/* MOBILE MENU */}
+        {/*Mobile Menu*/}
         <div
           className={clsx(
             "md:hidden flex-col gap-4 pb-6 text-white/80",

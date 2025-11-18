@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { ApiUser } from '../types'
 
-interface AuthState {
+type AuthState = {
   accessToken: string | null
   refreshToken: string | null
   user: ApiUser | null

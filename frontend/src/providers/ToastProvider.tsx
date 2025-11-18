@@ -1,13 +1,13 @@
 import { ReactNode, createContext, useCallback, useContext, useState } from 'react'
 
 type ToastType = 'success' | 'error' | 'info'
-interface Toast {
+type Toast= {
   id: number
   message: string
   type: ToastType
 }
 
-interface ToastContextValue {
+type ToastContextValue = {
   pushToast: (toast: Omit<Toast, 'id'>) => void
 }
 

@@ -10,7 +10,6 @@ body {
 #root {
   min-height: 100vh;
 }
-
 /* ------------------------------------------------------------------
    LIGHT THEME VARIABLES (NO DARK MODE)
    These are required for shadcn/ui components + the calendar.
@@ -55,14 +54,7 @@ body {
     /* Radius */
     --radius: 0.5rem;
   }
-
-  /* Completely disable dark mode */
-  .dark {
-    /* intentionally empty */
-  }
-}
-
-/* ------------------------------------------------------------------
+  /* ------------------------------------------------------------------
    APPLY BASE THEME TO EVERYTHING
 ------------------------------------------------------------------- */
 @layer base {
@@ -73,4 +65,7 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+} 
 }
+
+

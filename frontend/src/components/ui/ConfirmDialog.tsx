@@ -1,6 +1,6 @@
 import { AppButton } from "./AppButton"
 
-interface ConfirmDialogProps {
+type ConfirmDialogProps = {
   open: boolean
   title: string
   description?: string

@@ -4,7 +4,7 @@ import { ApiUser } from '../types'
 
 export const USERS_KEY = ['users']
 
-interface UseUsersOptions {
+type UseUsersOptions  = {
   enabled?: boolean
   endpoint?: string
 }

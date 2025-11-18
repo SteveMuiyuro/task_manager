@@ -5,7 +5,7 @@ const HeroSection = () => {
     <section id="hello" className="relative pt-32 pb-20 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 grid gap-12 md:grid-cols-2 items-center">
         
-        {/* LEFT SIDE */}
+        {/* Hero section Leftside */}
         <div className="space-y-6 text-white">
           <h1 className="text-4xl sm:text-5xl font-semibold leading-tight">
             Organize Your Work Effortlessly
@@ -17,7 +17,7 @@ const HeroSection = () => {
             designate responsibilities, establish deadlines, and maintain productivity.
           </p>
 
-          {/* BUTTONS */}
+          {/* Hero Section Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
             <AppButton 
               to="/register" 
@@ -35,7 +35,7 @@ const HeroSection = () => {
             </AppButton>
           </div>
 
-          {/* STATS */}
+          {/* Hero section statistics */}
           <dl className="grid grid-cols-3 gap-4 pt-8 text-center">
             <div className="p-4 rounded-2xl bg-white/5 backdrop-blur">
               <dt className="text-3xl font-bold">5k+</dt>
@@ -60,7 +60,7 @@ const HeroSection = () => {
           </dl>
         </div>
 
-        {/* RIGHT SIDE */}
+        {/* Hero section right side */}
         <div className="relative" aria-hidden>
           <div className="absolute -top-10 -right-10 w-60 h-60 bg-brand-500/40 blur-[120px] rounded-full" />
 
@@ -78,7 +78,7 @@ const HeroSection = () => {
               </span>
             </div>
 
-            {/* TASKS */}
+            {/* Hero Section Tasks */}
             <div className="space-y-4">
               {[1, 2, 3].map((item) => (
                 <div key={item} className="flex items-center justify-between">
@@ -97,7 +97,7 @@ const HeroSection = () => {
               ))}
             </div>
 
-            {/* TOTAL PROGRESS */}
+            {/* Hero section Total Progress */}
             <div className="mt-10 p-4 rounded-2xl bg-white/10">
               <p className="text-sm text-white/70">Total Progress</p>
 

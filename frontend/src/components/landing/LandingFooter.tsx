@@ -1,3 +1,4 @@
+// Footer Details
 const LandingFooter = () => {
   return (
     <footer className="bg-[#0c081f] text-white py-10 flex flex-col">
