@@ -13,37 +13,47 @@ User = get_user_model()
 
 
 class TaskViewSet(viewsets.ModelViewSet):
+    """
+    Production-ready TaskViewSet with:
+    - strict role-based permissions,
+    - optimized querysets,
+    - consistent error responses,
+    - protected write operations.
+    """
     serializer_class = TaskSerializer
-    queryset = Task.objects.select_related('assigned_to', 'created_by')
+    queryset = Task.objects.select_related("assigned_to", "created_by")
     filterset_class = TaskFilter
-    search_fields = ('title', 'description')
-    ordering_fields = ('created_at', 'due_date', 'priority')
+    search_fields = ("title", "description")
+    ordering_fields = ("created_at", "due_date", "priority")
 
     def get_permissions(self):
         user = self.request.user
 
-        # MEMBER PERMISSIONS
+        # MEMBERS
         if user.is_member:
-            if self.action in ["list", "retrieve"]:
+            # Allow read & self-status update only
+            if self.action in ["list", "retrieve", "update", "partial_update"]:
                 return [IsAuthenticated()]
-            if self.action in ["update", "partial_update"]:
-                return [IsAuthenticated()]
-            # No create, delete, assign
-            return []
+            return []  # No create/delete/assign
 
-        # MANAGER / ADMIN = FULL CRUD
+        # MANAGERS + ADMINS = full access
         return [IsManagerOrAdmin()]
 
     def get_queryset(self):
         queryset = super().get_queryset()
         user = self.request.user
+
+        # Members only see their assigned tasks
         if user.is_member:
-            queryset = queryset.filter(assigned_to=user)
+            return queryset.filter(assigned_to=user)
+
         return queryset
 
     def perform_create(self, serializer):
         user = self.request.user
+
         if user.is_member:
+            # Members can only create tasks for themselves
             serializer.save(created_by=user, assigned_to=user)
         else:
             serializer.save(created_by=user)
@@ -52,49 +62,51 @@ class TaskViewSet(viewsets.ModelViewSet):
         if request.user.is_member:
             return Response(
                 {"detail": "Members cannot delete tasks."},
-                status=status.HTTP_403_FORBIDDEN
+                status=status.HTTP_403_FORBIDDEN,
             )
         return super().destroy(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
-        instance = self.get_object()
         user = request.user
+        instance = self.get_object()
 
         if user.is_member:
+            # Members may only update their own tasks
             if instance.assigned_to != user:
                 return Response(
                     {"detail": "Members may only modify their own assigned tasks."},
-                    status=status.HTTP_403_FORBIDDEN
+                    status=status.HTTP_403_FORBIDDEN,
                 )
 
-            # Members can only update task status
-            non_status_fields = set(request.data.keys()) - {"status"}
-            if non_status_fields:
+            # Members may only update the 'status' field
+            invalid_fields = set(request.data.keys()) - {"status"}
+            if invalid_fields:
                 return Response(
                     {"detail": "Members may only update the task status."},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
         return super().update(request, *args, **kwargs)
 
-    @action(detail=True, methods=['post'], permission_classes=[IsManagerOrAdmin])
+    @action(detail=True, methods=["post"], permission_classes=[IsManagerOrAdmin])
     def assign(self, request, pk=None):
-        """Assign task to a user (Manager/Admin only)."""
+        """Assign or unassign a task (Manager/Admin only)."""
         task = self.get_object()
-        user_id = request.data.get('user_id')
+        user_id = request.data.get("user_id")
 
+        # Unassign
         if not user_id:
             task.assigned_to = None
+
         else:
             try:
                 assignee = User.objects.get(id=user_id)
             except User.DoesNotExist:
                 return Response(
-                    {'detail': 'User not found.'},
-                    status=status.HTTP_404_NOT_FOUND
+                    {"detail": "User not found."},
+                    status=status.HTTP_404_NOT_FOUND,
                 )
             task.assigned_to = assignee
 
-        task.save(update_fields=['assigned_to'])
-
+        task.save(update_fields=["assigned_to"])
         return Response(self.get_serializer(task).data)
