@@ -36,7 +36,7 @@ const TaskList = ({ tasks, canDelete = false, onDeleteClick, onInfoClick }: TPro
             {onInfoClick && (
               <button
                 type="button"
-                className="text-sm font-medium text-brand-600 hover:underline"
+                className="text-sm font-medium text-brand-600"
                 onClick={(event) => {
                   event.preventDefault()
                   onInfoClick(task)
@@ -49,7 +49,7 @@ const TaskList = ({ tasks, canDelete = false, onDeleteClick, onInfoClick }: TPro
             {canDelete && (
               <button
                 type="button"
-                className="text-sm font-medium text-rose-600 hover:underline"
+                className="text-sm font-medium text-rose-600"
                 onClick={(event) => {
                   event.preventDefault()
                   onDeleteClick?.(task)
