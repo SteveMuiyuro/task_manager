@@ -4,36 +4,51 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS
 class IsAdmin(BasePermission):
     """Full access only for admins."""
     def has_permission(self, request, view):
-        return (
-            request.user.is_authenticated
-            and request.user.is_admin
+        user = request.user
+        return bool(
+            user.is_authenticated
+            and getattr(user, "is_admin", False)
         )
 
 
 class IsManagerOrAdmin(BasePermission):
-    """Managers & Admins have elevated permissions."""
+    """Managers and Admins have elevated permissions."""
     def has_permission(self, request, view):
-        return (
-            request.user.is_authenticated
-            and (request.user.is_manager or request.user.is_admin)
+        user = request.user
+        return bool(
+            user.is_authenticated
+            and (getattr(user, "is_manager", False) or getattr(user, "is_admin", False))
         )
 
 
 class IsSelfOrAdmin(BasePermission):
-    """Allow user to manage themselves or admin override."""
+    """
+    Allow the user to access/modify their own object,
+    or give full access to admins.
+    """
+    def has_permission(self, request, view):
+        return request.user.is_authenticated
+
     def has_object_permission(self, request, view, obj):
-        return (
-            request.user.is_authenticated
-            and (request.user.is_admin or obj == request.user)
+        user = request.user
+        return bool(
+            user.is_authenticated
+            and (getattr(user, "is_admin", False) or obj == user)
         )
 
 
 class ReadOnlyOrAdmin(BasePermission):
-    """Allow read operations to everyone, write only to admin."""
+    """
+    Allow all users to perform SAFE (read-only) operations.
+    Non-safe operations require admin.
+    """
     def has_permission(self, request, view):
+        user = request.user
+
         if request.method in SAFE_METHODS:
             return True
-        return (
-            request.user.is_authenticated
-            and request.user.is_admin
+
+        return bool(
+            user.is_authenticated
+            and getattr(user, "is_admin", False)
         )
