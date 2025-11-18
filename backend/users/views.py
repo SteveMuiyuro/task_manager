@@ -18,16 +18,19 @@ User = get_user_model()
 
 
 # ============================================================
-# AUTHENTICATION VIEWS
+# AUTHENTICATION
 # ============================================================
 
 class LoginView(TokenObtainPairView):
-    """Login using username + password to get access/refresh tokens."""
+    """
+    Login endpoint issuing access & refresh JWTs.
+    Uses custom serializer for username/password auth.
+    """
     serializer_class = UsernameTokenObtainPairSerializer
 
 
 class RegisterView(APIView):
-    """Public user registration endpoint."""
+    """Public registration endpoint — always creates MEMBER users."""
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -45,8 +48,7 @@ class RegisterView(APIView):
 
 
 class LogoutView(APIView):
-    """Logout by blacklisting refresh token."""
-
+    """Logout by blacklisting the refresh token."""
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -54,7 +56,7 @@ class LogoutView(APIView):
 
         if not refresh_token:
             return Response(
-                {"detail": "Refresh token missing."},
+                {"detail": "Refresh token is required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -71,16 +73,16 @@ class LogoutView(APIView):
         
 
 # ============================================================
-# USER MANAGEMENT
+# USER MANAGEMENT (Admin / Manager Rules)
 # ============================================================
 
 class UserViewSet(viewsets.ModelViewSet):
     """
     User management API:
 
-    /users/           → Admin only
-    /users/me/       → Any authenticated user
-    /users/options/  → Manager/Admin (used for assigning tasks)
+    GET /users/         → Admin only
+    GET /users/me/      → Any authenticated user
+    GET /users/options/ → Manager/Admin (for task assignment)
     """
     serializer_class = UserSerializer
     queryset = User.objects.all().order_by("id")
@@ -88,28 +90,28 @@ class UserViewSet(viewsets.ModelViewSet):
     search_fields = ("username", "email")
 
     def get_permissions(self):
-        action = self.action
-
-        # Any logged-in user can access their own profile
-        if action == "me":
+        """
+        Apply custom permission rules per action.
+        """
+        if self.action == "me":
             return [IsAuthenticated()]
 
-        # Managers/Admins can list users for task-assign dropdown
-        if action == "options":
+        if self.action == "options":
             return [IsManagerOrAdmin()]
 
-        # Everything else requires admin
         return [IsAdmin()]
 
     @action(detail=False, methods=["get"])
     def me(self, request):
-        """Return the profile of the logged-in user."""
-        serializer = self.get_serializer(request.user)
-        return Response(serializer.data)
+        """Return logged-in user's profile."""
+        return Response(
+            self.get_serializer(request.user).data
+        )
 
     @action(detail=False, methods=["get"])
     def options(self, request):
-        """Return list of users (used by task assignment UI)."""
+        """Return list of users for task assignment (Manager/Admin)."""
         users = self.get_queryset()
-        serializer = self.get_serializer(users, many=True)
-        return Response(serializer.data)
+        return Response(
+            self.get_serializer(users, many=True).data
+        )
