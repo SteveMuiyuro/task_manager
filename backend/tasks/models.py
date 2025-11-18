@@ -14,12 +14,11 @@ class Task(TimeStampedModel):
     """
     Core task model.
 
-    Features:
     - Title, description, due date
     - Status (enum)
-    - Priority (1 = high, 3 = low)
-    - assigned_to: nullable FK (SET_NULL on user deletion)
-    - created_by: required FK (task owner)
+    - Priority (1=High, 3=Low)
+    - assigned_to: nullable FK, SET_NULL
+    - created_by: required FK, CASCADE
     """
 
     title = models.CharField(max_length=255)
@@ -44,13 +43,22 @@ class Task(TimeStampedModel):
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="tasks_created",
-        on_delete=models.CASCADE,  # delete tasks if user is deleted
+        on_delete=models.CASCADE,
     )
 
-    priority = models.PositiveSmallIntegerField(default=2)  # 1=High, 2=Normal, 3=Low
+    # Recommended range: 1 (High), 2 (Medium), 3 (Low)
+    priority = models.PositiveSmallIntegerField(default=2)
 
     class Meta:
         ordering = ["-created_at"]
+
+        # These improve performance in production
+        indexes = [
+            models.Index(fields=["status"]),
+            models.Index(fields=["assigned_to"]),
+            models.Index(fields=["due_date"]),
+            models.Index(fields=["created_at"]),
+        ]
 
     def __str__(self):
         return self.title
