@@ -20,9 +20,9 @@ const UserProfileSection = ({ onOpen }: UserProfileSectionProps) => {
         <div className="h-10 w-10 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center font-semibold">
           {initials}
         </div>
-        <div className="flex flex-col text-left ml-auto">
+        <div className="flex gap-2 items-baseline text-left ml-auto">
           <p className="text-xs text-slate-500 uppercase tracking-wide flex items-center gap-1">
-            <UserRound className="h-4 w-4" /> Profile
+            <UserRound className="h-4 w-4" />
           </p>
           <p className="text-sm font-semibold text-slate-700 truncate">{user?.username ?? 'Unknown user'}</p>
         </div>
