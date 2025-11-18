@@ -5,11 +5,11 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY — MUST COME FROM VPS ENV VARIABLES
-SECRET_KEY = env_config("DJANGO_SECRET_KEY")  # No default in production
+# -----------------------------------------------------
+# Security
+# -----------------------------------------------------
+SECRET_KEY = env_config("DJANGO_SECRET_KEY")
 DEBUG = env_config("DJANGO_DEBUG", default="False").lower() == "true"
-
-# ALLOWED_HOSTS = ["yourdomain.com", "api.yourdomain.com"]
 ALLOWED_HOSTS = env_config("DJANGO_ALLOWED_HOSTS", default="localhost,127.0.0.1").split(",")
 
 # -----------------------------------------------------
@@ -40,12 +40,9 @@ INSTALLED_APPS = [
 # Middleware
 # -----------------------------------------------------
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",         
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
-
-    # Enables WhiteNoise for static file serving
     "whitenoise.middleware.WhiteNoiseMiddleware",
-
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -56,6 +53,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "config.urls"
 
+# -----------------------------------------------------
+# Templates
+# -----------------------------------------------------
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -90,17 +90,16 @@ DATABASES = {
 }
 
 # -----------------------------------------------------
-# CORS (Frontend URL will change in deployment)
+# CORS
 # -----------------------------------------------------
 CORS_ALLOW_CREDENTIALS = True
-
 CORS_ALLOWED_ORIGINS = env_config(
     "CORS_ALLOWED_ORIGINS",
     default="http://localhost:5173"
 ).split(",")
 
 # -----------------------------------------------------
-# Password Validators
+# Password Validation
 # -----------------------------------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -110,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # -----------------------------------------------------
-# Django Internationalization
+# Internationalization
 # -----------------------------------------------------
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
@@ -118,12 +117,14 @@ USE_I18N = True
 USE_TZ = True
 
 # -----------------------------------------------------
-# Static Files — VERY IMPORTANT FOR DEPLOYMENT
+# Static / Media (Deployment Critical)
 # -----------------------------------------------------
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# WhiteNoise supports:
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -147,7 +148,7 @@ REST_FRAMEWORK = {
 }
 
 # -----------------------------------------------------
-# Simple JWT
+# JWT Settings
 # -----------------------------------------------------
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(
@@ -161,6 +162,6 @@ SIMPLE_JWT = {
 }
 
 # -----------------------------------------------------
-# Email (console for dev)
+# Email
 # -----------------------------------------------------
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
