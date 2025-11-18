@@ -2,6 +2,8 @@ from rest_framework.routers import DefaultRouter
 from tasks.views import TaskViewSet
 from users.views import UserViewSet
 
-router = DefaultRouter()
-router.register(r'tasks', TaskViewSet, basename='task')
-router.register(r'users', UserViewSet, basename='user')
+# Explicitly disable trailing slashes for cleaner API URLs
+router = DefaultRouter(trailing_slash=False)
+
+router.register("tasks", TaskViewSet, basename="task")
+router.register("users", UserViewSet, basename="user")
