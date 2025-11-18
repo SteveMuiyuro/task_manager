@@ -29,3 +29,6 @@ export type PaginatedResponse<T>  = {
   previous?: string | null
   results: T[]
 }
+
+
+export type CategoryKey = "total" | "todo" | "inProgress" | "completed" | "assignedToMe"

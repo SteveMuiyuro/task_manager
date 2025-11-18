@@ -4,8 +4,8 @@ import Card from "../components/ui/Card"
 import { useTasks } from "../hooks/useTasks"
 import { useAuthStore } from "../store/useAuthStore"
 import { Task } from "../types"
+import { CategoryKey } from "../types"
 
-type CategoryKey = "total" | "todo" | "inProgress" | "completed" | "assignedToMe"
 
 const DashboardPage = () => {
   const { user } = useAuthStore()

@@ -1,12 +1,10 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/useAuthStore'
-import { useTheme } from '../../providers/ThemeProvider'
 import { useAuth } from '../../hooks/useAuth'
 
 const Navbar = () => {
   const { user } = useAuthStore()
   const { logout } = useAuth()
-  const { theme, setTheme } = useTheme()
   const navigate = useNavigate()
 
   const handleLogout = async () => {

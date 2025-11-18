@@ -24,7 +24,6 @@ const TaskDetailPage = () => {
   const assignMutation = useAssignTask()
   const deleteMutation = useDeleteTask()
   const navigate = useNavigate()
-
   const { user } = useAuthStore()
   const { pushToast } = useToast()
 

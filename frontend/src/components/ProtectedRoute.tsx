@@ -4,11 +4,11 @@ import { Role } from '../types'
 import { useAuthStore } from '../store/useAuthStore'
 import { useAuth } from '../hooks/useAuth'
 
-interface Props {
+type  TProps = {
   roles?: Role[]
 }
 
-const ProtectedRoute = ({ children, roles }: PropsWithChildren<Props>) => {
+const ProtectedRoute = ({ children, roles }: PropsWithChildren<TProps>) => {
   const { accessToken, user } = useAuthStore()
   const { fetchProfile } = useAuth()
   useEffect(() => {

@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/select"
 import { ApiUser, TaskStatus } from "../types"
 
-interface Props {
+type TProps = {
   status?: TaskStatus
   assignee?: string
   onChange: (filters: { status?: TaskStatus; assignee?: string }) => void
@@ -17,7 +17,7 @@ interface Props {
 // Special constant for "All"
 const ALL_VALUE = "__all__"
 
-const TaskFilters = ({ status, assignee, onChange, users }: Props) => (
+const TaskFilters = ({ status, assignee, onChange, users }: TProps) => (
   <div className="grid md:grid-cols-2 gap-4">
 
     {/* STATUS FILTER */}

@@ -14,14 +14,14 @@ const statusVariant = (status: Task['status']) => {
   }
 }
 
-interface Props {
+type TProps = {
   tasks: Task[]
   canDelete?: boolean
   onDeleteClick?: (task: Task) => void
   onInfoClick?: (task: Task) => void
 }
 
-const TaskList = ({ tasks, canDelete = false, onDeleteClick, onInfoClick }: Props) => (
+const TaskList = ({ tasks, canDelete = false, onDeleteClick, onInfoClick }: TProps) => (
   <div className="grid gap-4">
     {tasks.map((task) => (
       <Card key={task.id}>

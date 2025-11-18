@@ -13,7 +13,7 @@ const statusVariant = (status: Task["status"]) => {
   }
 }
 
-interface TaskInfoDialogProps {
+type TaskInfoDialogProps = {
   task: Task | null
   onClose: () => void
 }

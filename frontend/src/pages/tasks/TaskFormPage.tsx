@@ -28,12 +28,12 @@ import { useUsers } from "../../hooks/useUsers"
 import { TaskStatus } from "../../types"
 import { useToast } from "../../providers/ToastProvider"
 
-type Props = {
+type TProps = {
   mode: "create" | "edit"
 }
 
 function formatDate(date: Date) {
-  return date.toLocaleDateString("en-CA"); // gives YYYY-MM-DD
+  return date.toLocaleDateString("en-CA"); 
 }
 
 function getStartOfDay(date: Date) {
@@ -42,7 +42,7 @@ function getStartOfDay(date: Date) {
   return normalized
 }
 
-const TaskFormPage = ({ mode }: Props) => {
+const TaskFormPage = ({ mode }: TProps) => {
   const navigate = useNavigate()
   const { taskId } = useParams()
 
@@ -195,7 +195,7 @@ const TaskFormPage = ({ mode }: Props) => {
                 disabled={{ before: today }}
                 onSelect={handleDateSelect}
                 autoFocus
-                initialFocus
+     
               />
             </PopoverContent>
           </Popover>

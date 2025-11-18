@@ -13,7 +13,7 @@ const statusVariant = (status: Task["status"]) => {
   }
 }
 
-interface TaskCategoryDialogProps {
+type  TaskCategoryDialogProps = {
   title: string | null
   tasks: Task[]
   onClose: () => void
