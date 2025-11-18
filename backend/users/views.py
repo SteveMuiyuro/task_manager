@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth import get_user_model
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -11,32 +11,33 @@ from core.permissions import IsAdmin, IsManagerOrAdmin
 from .serializers import (
     RegisterSerializer,
     UserSerializer,
-    UsernameTokenObtainPairSerializer
+    UsernameTokenObtainPairSerializer,
 )
 
 User = get_user_model()
 
 
-# -------------------------
+# ============================================================
 # AUTHENTICATION VIEWS
-# -------------------------
+# ============================================================
 
 class LoginView(TokenObtainPairView):
-    """Custom login view using custom serializer."""
+    """Login using username + password to get access/refresh tokens."""
     serializer_class = UsernameTokenObtainPairSerializer
 
 
 class RegisterView(APIView):
-    """Public user registration."""
+    """Public user registration endpoint."""
     permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = RegisterSerializer(
             data=request.data,
-            context={'request': request}
+            context={"request": request}
         )
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+
         return Response(
             UserSerializer(user).data,
             status=status.HTTP_201_CREATED
@@ -44,54 +45,71 @@ class RegisterView(APIView):
 
 
 class LogoutView(APIView):
-    """Blacklist refresh token."""
+    """Logout by blacklisting refresh token."""
+
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
-        refresh = request.data.get('refresh')
-        if refresh:
-            try:
-                token = RefreshToken(refresh)
-                token.blacklist()
-            except Exception:
-                pass
-        return Response({'detail': 'Logged out successfully.'})
+        refresh_token = request.data.get("refresh")
 
+        if not refresh_token:
+            return Response(
+                {"detail": "Refresh token missing."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-# -------------------------
-# USER MANAGEMENT (Admin Only)
-# -------------------------
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+        except Exception:
+            return Response(
+                {"detail": "Invalid or expired refresh token."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return Response({"detail": "Logged out successfully."})
+        
+
+# ============================================================
+# USER MANAGEMENT
+# ============================================================
 
 class UserViewSet(viewsets.ModelViewSet):
     """
-    Admin-only user management.
-    Extra routes:
-        /users/me/        → any authenticated user
-        /users/options/   → manager/admin only
+    User management API:
+
+    /users/           → Admin only
+    /users/me/       → Any authenticated user
+    /users/options/  → Manager/Admin (used for assigning tasks)
     """
     serializer_class = UserSerializer
-    queryset = User.objects.all().order_by('id')
-    filterset_fields = ('role',)
-    search_fields = ('username', 'email')
+    queryset = User.objects.all().order_by("id")
+    filterset_fields = ("role",)
+    search_fields = ("username", "email")
 
     def get_permissions(self):
         action = self.action
 
+        # Any logged-in user can access their own profile
         if action == "me":
             return [IsAuthenticated()]
 
+        # Managers/Admins can list users for task-assign dropdown
         if action == "options":
             return [IsManagerOrAdmin()]
 
-        # Default: admin only
+        # Everything else requires admin
         return [IsAdmin()]
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=["get"])
     def me(self, request):
-        """Return the logged-in user's profile."""
+        """Return the profile of the logged-in user."""
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=["get"])
     def options(self, request):
-        """Return all users to managers/admins."""
-        serializer = self.get_serializer(self.get_queryset(), many=True)
+        """Return list of users (used by task assignment UI)."""
+        users = self.get_queryset()
+        serializer = self.get_serializer(users, many=True)
         return Response(serializer.data)
