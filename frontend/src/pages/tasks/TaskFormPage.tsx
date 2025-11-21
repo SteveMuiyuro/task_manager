@@ -47,7 +47,7 @@ const TaskFormPage = ({ mode }: TProps) => {
   const { taskId } = useParams()
 
   const { data: task } = useTask(taskId || "", { enabled: mode === "edit" })
-  const { mutateAsync } = useTaskMutation()
+  const { mutateAsync, isPending } = useTaskMutation()
   const { data: users = [] } = useUsers({ endpoint: "users/options/" })
   const { pushToast } = useToast()
 
@@ -96,6 +96,8 @@ const TaskFormPage = ({ mode }: TProps) => {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
+
+    if (isPending) return
 
     if (form.due_date) {
       const normalizedDueDate = getStartOfDay(new Date(form.due_date))
@@ -249,8 +251,14 @@ const TaskFormPage = ({ mode }: TProps) => {
         </div>
 
         {/* SUBMIT */}
-        <AppButton type="submit">
-          {mode === "create" ? "Create" : "Save changes"}
+        <AppButton type="submit" disabled={isPending}>
+          {isPending
+            ? mode === "create"
+              ? "Creating..."
+              : "Saving..."
+            : mode === "create"
+              ? "Create"
+              : "Save changes"}
         </AppButton>
       </form>
     </div>

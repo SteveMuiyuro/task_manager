@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react"
 import Card from "../../components/ui/Card"
-import{AppButton} from  "../../components/ui/AppButton"
+import { AppButton } from "../../components/ui/AppButton"
 import Input from "../../components/ui/Input"
 
 import {
@@ -36,6 +36,8 @@ const UsersPage = () => {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
+
+    if (mutation.isPending) return
 
     if (editingUser) {
       await mutation.mutateAsync({
@@ -164,8 +166,18 @@ const UsersPage = () => {
               </Select>
             </div>
 
-            <AppButton type="submit" className="w-full">
-              {editingUser ? "Save user" : "Create user"}
+            <AppButton
+              type="submit"
+              className="w-full"
+              disabled={mutation.isPending}
+            >
+              {mutation.isPending
+                ? editingUser
+                  ? "Saving..."
+                  : "Creating..."
+                : editingUser
+                  ? "Save user"
+                  : "Create user"}
             </AppButton>
 
             {editingUser && (
@@ -177,6 +189,7 @@ const UsersPage = () => {
                   setEditingUser(null)
                   setForm(defaultForm)
                 }}
+                disabled={mutation.isPending}
               >
                 Cancel
               </AppButton>

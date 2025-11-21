@@ -19,6 +19,20 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState("")
 
+  const getErrorMessage = (error: unknown) => {
+    const apiError = error as { response?: { data?: any } }
+    const data = apiError.response?.data
+
+    if (!data) return "Unable to register user."
+
+    if (typeof data === "string") return data
+    if (data.email?.length) return String(data.email[0])
+    if (data.detail) return String(data.detail)
+    if (data.non_field_errors?.length) return String(data.non_field_errors[0])
+
+    return "Unable to register user."
+  }
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
     setLoading(true)
@@ -30,9 +44,10 @@ const RegisterPage = () => {
       pushToast({ type: "success", message: "Account created" })
 
       setTimeout(() => navigate("/login"), 1000)
-    } catch {
-      setMessage("Unable to register user.")
-      pushToast({ type: "error", message: "Unable to register user" })
+    } catch (error) {
+      const errorMessage = getErrorMessage(error)
+      setMessage(errorMessage)
+      pushToast({ type: "error", message: errorMessage })
     } finally {
       setLoading(false)
     }

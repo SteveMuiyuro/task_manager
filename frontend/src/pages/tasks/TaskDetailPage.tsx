@@ -20,7 +20,7 @@ import ConfirmDialog from "../../components/ui/ConfirmDialog"
 const TaskDetailPage = () => {
   const { taskId } = useParams()
   const { data: task, isLoading } = useTask(taskId || "")
-  const { mutateAsync } = useTaskMutation()
+  const { mutateAsync, isPending } = useTaskMutation()
   const assignMutation = useAssignTask()
   const deleteMutation = useDeleteTask()
   const navigate = useNavigate()
@@ -56,6 +56,8 @@ const TaskDetailPage = () => {
   if (!task) return <p>Task not found.</p>
 
   const handleStatusUpdate = async () => {
+    if (isPending) return
+
     await mutateAsync({ id: task.id, payload: { status }, method: "patch" })
     await refetch()
     pushToast({ type: "success", message: "Status updated" })
@@ -133,7 +135,9 @@ const TaskDetailPage = () => {
             </Select>
           </div>
 
-          <AppButton onClick={handleStatusUpdate}>Save status</AppButton>
+          <AppButton onClick={handleStatusUpdate} disabled={isPending}>
+            {isPending ? "Saving..." : "Save status"}
+          </AppButton>
         </div>
       )}
 
