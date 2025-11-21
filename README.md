@@ -10,7 +10,7 @@ Tailwind** frontend.
 
 ## 👤 Admin Login
 
--   **Username:** tasksadmin\
+-   **Username:** tasksadmin
 -   **Password:** taskmanager2025
 
 ## 🚀 Features
