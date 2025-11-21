@@ -1,4 +1,4 @@
-# 🗂️ Team Task Manager
+# 🗂️ Task Manager App
 
 A full-stack task management web application built with **Django REST
 Framework**, **PostgreSQL**, and a **Vite + React + TypeScript +
