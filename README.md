@@ -11,7 +11,7 @@ Tailwind** frontend.
 ## 👤 Admin Login
 
 -   **Username:** tasksadmin
--   **Password:** taskmanager2025
+-   **Password:** Maxi2025
 
 ## 🚀 Features
 
