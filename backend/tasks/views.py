@@ -17,7 +17,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.select_related('assigned_to', 'created_by')
     filterset_class = TaskFilter
     search_fields = ('title', 'description')
-    ordering_fields = ('created_at', 'due_date', 'priority')
+    ordering_fields = ('created_at', 'due_date')
 
     def get_permissions(self):
         user = self.request.user

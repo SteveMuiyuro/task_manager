@@ -21,7 +21,7 @@ class Task(TimeStampedModel):
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name='tasks_created', on_delete=models.CASCADE
     )
-    priority = models.PositiveSmallIntegerField(default=2)
+   
 
     class Meta:
         ordering = ['-created_at']

@@ -16,7 +16,6 @@ export type  Task  = {
   description: string
   status: TaskStatus
   due_date?: string | null
-  priority: number
   assigned_to?: ApiUser | null
   created_by: ApiUser
   created_at: string
